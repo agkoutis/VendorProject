@@ -17,9 +17,10 @@ namespace Vendor.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<VendorResponse>> GetAll()
+        public async Task<ActionResult<IEnumerable<VendorResponse>>> GetAll()
         {
-            throw new NotImplementedException();
+            IEnumerable<VendorResponse> vendors = await this._vendorService.GetAllAsync();
+            return Ok(vendors);
         }
 
         [HttpGet("{id}")]

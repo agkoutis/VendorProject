@@ -1,0 +1,14 @@
+{
+  "SelectedLoaderType": "Sql",
+
+  "VendorLoaderOptions": {
+    "Sql": {
+      "Server": "server",
+      "UserId": "userid",
+      "Password": "password"
+    },
+    "File": {
+      "FilePath": "suppliers.txt"
+    }
+  }
+}
