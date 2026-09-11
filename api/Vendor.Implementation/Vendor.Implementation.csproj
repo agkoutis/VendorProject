@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SqlServerLoader\SqlServerLoader.csproj" />
+    <ProjectReference Include="..\Vendor.Interfaces\Vendor.Interfaces.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="PersistedStore\" />
+  </ItemGroup>
+
 </Project>
