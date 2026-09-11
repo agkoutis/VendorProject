@@ -10,41 +10,42 @@ namespace Vendor.Controllers
     public class VendorController : ControllerBase
     {
         private readonly IVendorService _vendorService;
+        private readonly IActionHandler _actionHandler;
 
-        public VendorController(IVendorService vendorService)
+        public VendorController(IVendorService vendorService, IActionHandler actionHandler)
         {
             this._vendorService = vendorService;
+            this._actionHandler = actionHandler;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<VendorResponse>>> GetAll()
+        public Task<IActionResult> GetAll()
         {
-            IEnumerable<VendorResponse> vendors = await this._vendorService.GetAllAsync();
-            return Ok(vendors);
+            return _actionHandler.ExecuteAppResponseAction(() => this._vendorService.GetAllAsync());
         }
 
         [HttpGet("{id}")]
-        public ActionResult<VendorResponse> GetById(string id)
+        public Task<IActionResult> GetById(string id)
         {
-            throw new NotImplementedException();
+            return _actionHandler.ExecuteAppResponseAction(() => this._vendorService.GetByIdAsync(id));
         }
 
         [HttpPost]
-        public IActionResult Insert(VendorRequest vendor)
+        public Task<IActionResult> Insert(VendorRequest vendor)
         {
-            throw new NotImplementedException();
+            return _actionHandler.ExecuteAppResponseAction(() => this._vendorService.InsertAsync(vendor));
         }
 
         [HttpPut]
-        public IActionResult Update(VendorResponse vendor)
+        public Task<IActionResult> Update(VendorResponse vendor)
         {
-            throw new NotImplementedException();
+            return _actionHandler.ExecuteAppResponseAction(() => this._vendorService.UpdateAsync(vendor));
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(string id)
+        public Task<IActionResult> Delete(string id)
         {
-            throw new NotImplementedException();
+            return _actionHandler.ExecuteAppResponseAction(() => this._vendorService.DeleteAsync(id));
         }
     }
 }

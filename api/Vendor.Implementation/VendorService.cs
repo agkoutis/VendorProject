@@ -13,36 +13,34 @@ namespace Vendor.Implementation
             this._vendorRepository = vendorRepository;
         }
 
-        public Task<IEnumerable<VendorResponse>> GetAllAsync()
+        public async Task<AppResponse<IEnumerable<VendorResponse>>> GetAllAsync()
         {
-            try
-            {
-                return _vendorRepository.GetAllAsync();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            IEnumerable<VendorResponse> vendors = await _vendorRepository.GetAllAsync();
+            return AppResponse<IEnumerable<VendorResponse>>.Success(vendors);
         }
 
-        public Task<VendorResponse> GetByIdAsync(string id)
+        public async Task<AppResponse<VendorResponse>> GetByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            VendorResponse vendor = await _vendorRepository.GetByIdAsync(id);
+            return AppResponse<VendorResponse>.Success(vendor);
         }
 
-        public Task InsertAsync(VendorRequest vendor)
+        public async Task<AppResponse<bool>> InsertAsync(VendorRequest vendor)
         {
-            throw new NotImplementedException();
+            await _vendorRepository.InsertAsync(vendor);
+            return AppResponse<bool>.Success(true);
         }
 
-        public Task UpdateAsync(VendorResponse vendor)
+        public async Task<AppResponse<bool>> UpdateAsync(VendorResponse vendor)
         {
-            throw new NotImplementedException();
+            await _vendorRepository.UpdateAsync(vendor);
+            return AppResponse<bool>.Success(true);
         }
 
-        public Task DeleteAsync(string id)
+        public async Task<AppResponse<bool>> DeleteAsync(string id)
         {
-            throw new NotImplementedException();
+            await _vendorRepository.DeleteAsync(id);
+            return AppResponse<bool>.Success(true);
         }
     }
 }

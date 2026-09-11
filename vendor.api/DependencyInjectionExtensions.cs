@@ -1,6 +1,7 @@
 ﻿using FileLoader;
 using SqlServerLoader;
 using Vendor.Api.Options;
+using Vendor.Controllers;
 using Vendor.Implementation;
 using Vendor.Implementation.PersistedStore;
 using Vendor.Interfaces;
@@ -11,8 +12,14 @@ namespace Vendor.Api
     {
         public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<VendorLoaderSettings>(configuration);
+            RegisterConfigurationSettings(services, configuration);
 
+            services.Configure<VendorLoaderSettings>(configuration);
+            services.AddScoped<IActionHandler, ActionHandler>();
+        }
+
+        private static void RegisterConfigurationSettings(IServiceCollection services, IConfiguration configuration)
+        {
             VendorLoaderSettings settings = configuration.Get<VendorLoaderSettings>()
                 ?? throw new InvalidOperationException("Vendor loader settings are missing");
 
