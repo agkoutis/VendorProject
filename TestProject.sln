@@ -19,6 +19,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Loaders", "Loaders", "{E05E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vendor.Interfaces", "api\Vendor.Interfaces\Vendor.Interfaces.csproj", "{4C4429FC-7887-4793-8B7D-2E3C44C49DDF}"
 EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "vendorui.client", "VendorUI\vendorui.client\vendorui.client.esproj", "{253E58AF-6FE3-5EDA-E063-A24F2FC42C76}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VendorUI.Server", "VendorUI\VendorUI.Server\VendorUI.Server.csproj", "{14001BB3-AE55-4418-B3A4-3CEF9133CC93}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +53,16 @@ Global
 		{4C4429FC-7887-4793-8B7D-2E3C44C49DDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C4429FC-7887-4793-8B7D-2E3C44C49DDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C4429FC-7887-4793-8B7D-2E3C44C49DDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{253E58AF-6FE3-5EDA-E063-A24F2FC42C76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{253E58AF-6FE3-5EDA-E063-A24F2FC42C76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{253E58AF-6FE3-5EDA-E063-A24F2FC42C76}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{253E58AF-6FE3-5EDA-E063-A24F2FC42C76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{253E58AF-6FE3-5EDA-E063-A24F2FC42C76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{253E58AF-6FE3-5EDA-E063-A24F2FC42C76}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{14001BB3-AE55-4418-B3A4-3CEF9133CC93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14001BB3-AE55-4418-B3A4-3CEF9133CC93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14001BB3-AE55-4418-B3A4-3CEF9133CC93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14001BB3-AE55-4418-B3A4-3CEF9133CC93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
