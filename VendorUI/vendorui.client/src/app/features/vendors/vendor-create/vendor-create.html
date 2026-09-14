@@ -1,0 +1,23 @@
+<section class="page">
+  <h2>Create vendor</h2>
+  <p class="lede">Calls POST /api/Vendor.</p>
+
+  <app-page-feedback [message]="message" [error]="error" />
+
+  <form class="panel" (ngSubmit)="createVendor()">
+    <div class="form-grid">
+      <label>
+        Name
+        <input [(ngModel)]="form.name" name="name" placeholder="Vendor name" />
+      </label>
+      <label>
+        Address
+        <input [(ngModel)]="form.address" name="address" placeholder="Vendor address" />
+      </label>
+    </div>
+    <div class="row">
+      <button type="submit" [disabled]="isSaving">Create</button>
+      <a routerLink="/vendors">Back to list</a>
+    </div>
+  </form>
+</section>

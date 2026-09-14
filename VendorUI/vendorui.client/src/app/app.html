@@ -1,24 +1,15 @@
-﻿<h1 id="tableLabel">Weather forecast</h1>
+﻿<div class="app-shell">
+  <header>
+    <h1>Vendors</h1>
+    <p class="lede">Demo UI for Vendor.API through the reverse proxy.</p>
+    <nav>
+      <a routerLink="/vendors" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Get all</a>
+      <a routerLink="/vendors/lookup" routerLinkActive="active">Get by id</a>
+      <a routerLink="/vendors/create" routerLinkActive="active">Create</a>
+      <a routerLink="/vendors/update" routerLinkActive="active">Update</a>
+      <a routerLink="/vendors/delete" routerLinkActive="active">Delete</a>
+    </nav>
+  </header>
 
-<p>This component demonstrates fetching data from the server.</p>
-
-<p *ngIf="!forecasts"><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationangular">https://aka.ms/jspsintegrationangular</a> for more details.</em></p>
-
-<table *ngIf="forecasts">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Temp. (C)</th>
-            <th>Temp. (F)</th>
-            <th>Summary</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let forecast of forecasts">
-            <td>{{ forecast.date }}</td>
-            <td>{{ forecast.temperatureC }}</td>
-            <td>{{ forecast.temperatureF }}</td>
-            <td>{{ forecast.summary }}</td>
-        </tr>
-    </tbody>
-</table>
+  <router-outlet />
+</div>

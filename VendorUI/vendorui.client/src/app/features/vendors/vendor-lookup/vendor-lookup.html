@@ -1,0 +1,32 @@
+<section class="page">
+  <h2>Get vendor by id</h2>
+  <p class="lede">Calls GET /api/Vendor/:id.</p>
+
+  <app-page-feedback [message]="message" [error]="error" />
+
+  <form class="panel" (ngSubmit)="loadVendor()">
+    <div class="row">
+      <label>
+        Id
+        <input [(ngModel)]="lookupId" name="lookupId" placeholder="Vendor id" />
+      </label>
+      <button type="submit" [disabled]="isLoading">Get by id</button>
+    </div>
+  </form>
+
+  @if (vendor) {
+    <article class="panel">
+      <h3>{{ vendor.name }}</h3>
+      <dl class="details">
+        <dt>Id</dt>
+        <dd>{{ vendor.id }}</dd>
+        <dt>Address</dt>
+        <dd>{{ vendor.address }}</dd>
+      </dl>
+      <div class="actions">
+        <a [routerLink]="['/vendors/update', vendor.id]">Edit</a>
+        <a class="danger-link" [routerLink]="['/vendors/delete', vendor.id]">Delete</a>
+      </div>
+    </article>
+  }
+</section>

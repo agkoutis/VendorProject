@@ -1,6 +1,6 @@
 @VendorUI.Server_HostAddress = http://localhost:5104
 
-GET {{VendorUI.Server_HostAddress}}/weatherforecast/
+GET {{VendorUI.Server_HostAddress}}/api/Vendor
 Accept: application/json
 
 ###

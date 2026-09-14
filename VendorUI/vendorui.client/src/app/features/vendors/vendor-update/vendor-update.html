@@ -1,0 +1,28 @@
+<section class="page">
+  <h2>Update vendor</h2>
+  <p class="lede">Calls PUT /api/Vendor.</p>
+
+  <app-page-feedback [message]="message" [error]="error" />
+
+  <form class="panel" (ngSubmit)="updateVendor()">
+    <div class="form-grid">
+      <label>
+        Id
+        <input [(ngModel)]="form.id" name="id" placeholder="Vendor id" />
+      </label>
+      <label>
+        Name
+        <input [(ngModel)]="form.name" name="name" placeholder="Vendor name" />
+      </label>
+      <label>
+        Address
+        <input [(ngModel)]="form.address" name="address" placeholder="Vendor address" />
+      </label>
+    </div>
+    <div class="row">
+      <button type="button" class="secondary" (click)="loadVendor()" [disabled]="isLoading">Load</button>
+      <button type="submit" [disabled]="isSaving || isLoading">Update</button>
+      <a routerLink="/vendors">Back to list</a>
+    </div>
+  </form>
+</section>

@@ -1,14 +1,30 @@
 ﻿:host {
-    max-width: 1280px;
-    padding: 2rem;
-    text-align: center;
+    display: block;
 }
 
-th, td {
-    padding-left: 1rem;
-    padding-right: 1rem;
-}
-
-table {
+.app-shell {
+    max-width: 960px;
     margin: 0 auto;
+    padding: 2rem 1.5rem 3rem;
+}
+
+header h1 {
+    margin: 0 0 0.25rem;
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1.25rem 0 1.5rem;
+}
+
+nav a {
+    background: #e5e7eb;
+    color: #1f2937;
+}
+
+nav a.active {
+    background: #1f4e79;
+    color: #fff;
 }

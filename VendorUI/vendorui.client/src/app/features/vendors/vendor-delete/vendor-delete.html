@@ -1,0 +1,34 @@
+<section class="page">
+  <h2>Delete vendor</h2>
+  <p class="lede">Calls DELETE /api/Vendor/:id.</p>
+
+  <app-page-feedback [message]="message" [error]="error" />
+
+  <form class="panel" (ngSubmit)="loadVendor()">
+    <div class="row">
+      <label>
+        Id
+        <input [(ngModel)]="vendorId" name="vendorId" placeholder="Vendor id" />
+      </label>
+      <button type="submit" [disabled]="isLoading">Load</button>
+    </div>
+  </form>
+
+  @if (vendor) {
+    <article class="panel">
+      <p>This will permanently delete the vendor below.</p>
+      <dl class="details">
+        <dt>Id</dt>
+        <dd>{{ vendor.id }}</dd>
+        <dt>Name</dt>
+        <dd>{{ vendor.name }}</dd>
+        <dt>Address</dt>
+        <dd>{{ vendor.address }}</dd>
+      </dl>
+      <div class="row">
+        <button type="button" class="danger" (click)="deleteVendor()" [disabled]="isSaving">Delete</button>
+        <a routerLink="/vendors">Cancel</a>
+      </div>
+    </article>
+  }
+</section>
