@@ -4,7 +4,7 @@ namespace Vendor.Interfaces.Types
     {
         public T Data { get; set; } = default!;
 
-        public string Error { get; set; } = string.Empty;
+        public string? Error { get; set; }
 
         public bool HasError => !string.IsNullOrEmpty(Error);
 
@@ -13,7 +13,7 @@ namespace Vendor.Interfaces.Types
             return new AppResponse<T>
             {
                 Data = value,
-                Error = string.Empty
+                Error = null
             };
         }
 

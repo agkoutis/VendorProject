@@ -1,5 +1,5 @@
 export interface AppResponse<T> {
   data: T;
-  error: string;
+  error: string | null;
   hasError: boolean;
 }

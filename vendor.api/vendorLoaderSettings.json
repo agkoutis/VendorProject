@@ -1,5 +1,5 @@
 {
-  "SelectedLoaderType": "sql",
+  "SelectedLoaderType": "file",
 
   "VendorLoaderOptions": {
     "Sql": {
