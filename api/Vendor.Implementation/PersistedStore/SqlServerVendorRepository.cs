@@ -29,13 +29,13 @@ namespace Vendor.Implementation.PersistedStore
 
         public Task InsertAsync(VendorRequest vendor)
         {
-            Trader trader = vendor.ToModel(Guid.NewGuid().ToString());
+            Trader trader = vendor.ToTrader(Guid.NewGuid().ToString());
             return _dataLoader.InsertTrader(trader);
         }
 
         public Task UpdateAsync(VendorResponse vendor)
         {
-            Trader trader = vendor.ToModel(vendor.Id);
+            Trader trader = vendor.ToTrader(vendor.Id);
             return _dataLoader.UpdateTrader(trader);
         }
 

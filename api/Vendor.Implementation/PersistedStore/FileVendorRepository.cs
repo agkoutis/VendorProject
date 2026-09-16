@@ -1,4 +1,5 @@
 using FileLoader;
+using Vendor.Implementation.Extensions;
 using Vendor.Interfaces;
 using Vendor.Interfaces.types;
 using Vendor.Interfaces.Types;
@@ -17,26 +18,26 @@ namespace Vendor.Implementation.PersistedStore
         public Task<IEnumerable<VendorResponse>> GetAllAsync()
         {
             IEnumerable<Supplier> suppliers = _loader.LoadSuppliers();
-            List<VendorResponse> vendors = suppliers.Select(ToResponse).ToList();
+            List<VendorResponse> vendors = suppliers.Select(x => x.ToResponse()).ToList();
             return Task.FromResult<IEnumerable<VendorResponse>>(vendors);
         }
 
         public Task<VendorResponse> GetByIdAsync(string id)
         {
             Supplier supplier = _loader.LoadSupplier(id);
-            return Task.FromResult(ToResponse(supplier));
+            return Task.FromResult(supplier.ToResponse());
         }
 
         public Task InsertAsync(VendorRequest vendor)
         {
-            Supplier supplier = ToSupplier(vendor, Guid.NewGuid().ToString());
+            Supplier supplier = vendor.ToSupplier(Guid.NewGuid().ToString());
             _loader.InsertSupplier(supplier);
             return Task.CompletedTask;
         }
 
         public Task UpdateAsync(VendorResponse vendor)
         {
-            Supplier supplier = ToSupplier(vendor, vendor.Id);
+            Supplier supplier = vendor.ToSupplier(vendor.Id);
             _loader.UpdateSupplier(supplier);
             return Task.CompletedTask;
         }
@@ -45,26 +46,6 @@ namespace Vendor.Implementation.PersistedStore
         {
             _loader.DeleteSupplier(id);
             return Task.CompletedTask;
-        }
-
-        private static VendorResponse ToResponse(Supplier supplier)
-        {
-            return new VendorResponse
-            {
-                Id = supplier.Id ?? string.Empty,
-                Name = supplier.Name ?? string.Empty,
-                Address = supplier.Address ?? string.Empty
-            };
-        }
-
-        private static Supplier ToSupplier(VendorRequest request, string id)
-        {
-            return new Supplier
-            {
-                Id = id,
-                Name = request.Name,
-                Address = request.Address
-            };
         }
     }
 }

@@ -1,10 +1,4 @@
-﻿using SqlServerLoader;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FileLoader;
 using Vendor.Interfaces.types;
 using Vendor.Interfaces.Types;
 
@@ -12,23 +6,23 @@ namespace Vendor.Implementation.Extensions
 {
     internal static class FileLoaderExtensions
     {
-        internal static VendorResponse ToResponse(this Trader trader)
+        internal static VendorResponse ToResponse(this Supplier supplier)
         {
             return new VendorResponse
             {
-                Id = trader.Code,
-                Address = trader.Street,
-                Name = trader.Description
+                Id = supplier.Id ?? string.Empty,
+                Name = supplier.Name ?? string.Empty,
+                Address = supplier.Address ?? string.Empty
             };
         }
 
-        internal static Trader ToModel(this VendorRequest request, string? id = null)
+        internal static Supplier ToSupplier(this VendorRequest request, string id)
         {
-            return new Trader
+            return new Supplier
             {
-                Code = id,
-                Street = request.Address,
-                Description = request.Name
+                Id = id,
+                Name = request.Name,
+                Address = request.Address
             };
         }
     }

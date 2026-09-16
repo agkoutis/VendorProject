@@ -4,6 +4,7 @@ using Vendor.Api.Options;
 using Vendor.Controllers;
 using Vendor.Implementation;
 using Vendor.Implementation.PersistedStore;
+using Vendor.Implementation.Validation;
 using Vendor.Interfaces;
 
 namespace Vendor.Api
@@ -29,6 +30,7 @@ namespace Vendor.Api
             }
 
             services.AddSingleton<IVendorService, VendorService>();
+            services.AddSingleton<IVendorRequestValidator, VendorRequestValidator>();
 
             if (settings.SelectedLoaderType.Equals("Sql", StringComparison.OrdinalIgnoreCase))
             {
