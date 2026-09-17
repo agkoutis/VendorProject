@@ -33,28 +33,28 @@ namespace Vendor.Implementation
             return AppResponse<VendorResponse>.Success(vendor);
         }
 
-        public async Task<AppResponse<bool>> InsertAsync(VendorRequest vendor)
+        public async Task<AppResponse<VendorResponse>> InsertAsync(VendorRequest vendor)
         {
             ValidationResult validation = _vendorRequestValidator.ValidateCreateRequest(vendor);
             if (validation.HasError)
             {
-                return ToFailedResponse<bool>(validation);
+                return ToFailedResponse<VendorResponse>(validation);
             }
 
-            await _vendorRepository.InsertAsync(vendor);
-            return AppResponse<bool>.Success(true);
+            string id = await _vendorRepository.InsertAsync(vendor);
+            return await GetByIdAsync(id);
         }
 
-        public async Task<AppResponse<bool>> UpdateAsync(VendorResponse vendor)
+        public async Task<AppResponse<VendorResponse>> UpdateAsync(VendorResponse vendor)
         {
             ValidationResult validation = _vendorRequestValidator.ValidateUpdate(vendor);
             if (validation.HasError)
             {
-                return ToFailedResponse<bool>(validation);
+                return ToFailedResponse<VendorResponse>(validation);
             }
 
             await _vendorRepository.UpdateAsync(vendor);
-            return AppResponse<bool>.Success(true);
+            return await GetByIdAsync(vendor.Id);
         }
 
         public async Task<AppResponse<bool>> DeleteAsync(string id)

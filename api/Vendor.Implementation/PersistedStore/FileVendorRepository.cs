@@ -28,11 +28,12 @@ namespace Vendor.Implementation.PersistedStore
             return Task.FromResult(supplier.ToResponse());
         }
 
-        public Task InsertAsync(VendorRequest vendor)
+        public Task<string> InsertAsync(VendorRequest vendor)
         {
-            Supplier supplier = vendor.ToSupplier(Guid.NewGuid().ToString());
+            string id = Guid.NewGuid().ToString();
+            Supplier supplier = vendor.ToSupplier(id);
             _loader.InsertSupplier(supplier);
-            return Task.CompletedTask;
+            return Task.FromResult(id);
         }
 
         public Task UpdateAsync(VendorResponse vendor)

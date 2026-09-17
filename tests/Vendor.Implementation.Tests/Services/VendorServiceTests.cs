@@ -115,30 +115,42 @@ namespace Vendor.Implementation.Tests.Services
                 .Setup(validator => validator.ValidateCreateRequest(vendor))
                 .Returns(Failed("Request Validation Error", "Vendor name is required."));
 
-            AppResponse<bool> result = await _vendorService.InsertAsync(vendor);
+            AppResponse<VendorResponse> result = await _vendorService.InsertAsync(vendor);
 
             AssertFailure(result, "Vendor name is required.");
-            Assert.False(result.Data);
+            Assert.Null(result.Data);
             _vendorRequestValidator.Verify(validator => validator.ValidateCreateRequest(vendor), Times.Once);
             VerifyNoUnexpectedCalls();
         }
 
         [Fact]
-        public async Task InsertAsync_WhenValid_CallsRepositoryAndReturnsTrue()
+        public async Task InsertAsync_WhenValid_InsertsThenReturnsVendorFromGetById()
         {
             VendorRequest vendor = CreateRequest();
+            const string id = "vendor-1";
+            VendorResponse created = CreateVendor(id);
             _vendorRequestValidator
                 .Setup(validator => validator.ValidateCreateRequest(vendor))
                 .Returns(Succeeded());
             _vendorRepository
                 .Setup(repository => repository.InsertAsync(vendor))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(id);
+            _vendorRequestValidator
+                .Setup(validator => validator.ValidateGet(id))
+                .Returns(Succeeded());
+            _vendorRepository
+                .Setup(repository => repository.GetByIdAsync(id))
+                .ReturnsAsync(created);
 
-            AppResponse<bool> result = await _vendorService.InsertAsync(vendor);
+            AppResponse<VendorResponse> result = await _vendorService.InsertAsync(vendor);
 
-            AssertSuccess(result, true);
+            Assert.False(result.HasError);
+            Assert.Null(result.Error);
+            Assert.Same(created, result.Data);
             _vendorRequestValidator.Verify(validator => validator.ValidateCreateRequest(vendor), Times.Once);
             _vendorRepository.Verify(repository => repository.InsertAsync(vendor), Times.Once);
+            _vendorRequestValidator.Verify(validator => validator.ValidateGet(id), Times.Once);
+            _vendorRepository.Verify(repository => repository.GetByIdAsync(id), Times.Once);
             VerifyNoUnexpectedCalls();
         }
 
@@ -150,30 +162,41 @@ namespace Vendor.Implementation.Tests.Services
                 .Setup(validator => validator.ValidateUpdate(vendor))
                 .Returns(Failed("Request Validation Error", "Vendor id is required."));
 
-            AppResponse<bool> result = await _vendorService.UpdateAsync(vendor);
+            AppResponse<VendorResponse> result = await _vendorService.UpdateAsync(vendor);
 
             AssertFailure(result, "Vendor id is required.");
-            Assert.False(result.Data);
+            Assert.Null(result.Data);
             _vendorRequestValidator.Verify(validator => validator.ValidateUpdate(vendor), Times.Once);
             VerifyNoUnexpectedCalls();
         }
 
         [Fact]
-        public async Task UpdateAsync_WhenValid_CallsRepositoryAndReturnsTrue()
+        public async Task UpdateAsync_WhenValid_UpdatesThenReturnsVendorFromGetById()
         {
             VendorResponse vendor = CreateVendor();
+            VendorResponse updated = CreateVendor(name: "Acme Updated");
             _vendorRequestValidator
                 .Setup(validator => validator.ValidateUpdate(vendor))
                 .Returns(Succeeded());
             _vendorRepository
                 .Setup(repository => repository.UpdateAsync(vendor))
                 .Returns(Task.CompletedTask);
+            _vendorRequestValidator
+                .Setup(validator => validator.ValidateGet(vendor.Id))
+                .Returns(Succeeded());
+            _vendorRepository
+                .Setup(repository => repository.GetByIdAsync(vendor.Id))
+                .ReturnsAsync(updated);
 
-            AppResponse<bool> result = await _vendorService.UpdateAsync(vendor);
+            AppResponse<VendorResponse> result = await _vendorService.UpdateAsync(vendor);
 
-            AssertSuccess(result, true);
+            Assert.False(result.HasError);
+            Assert.Null(result.Error);
+            Assert.Same(updated, result.Data);
             _vendorRequestValidator.Verify(validator => validator.ValidateUpdate(vendor), Times.Once);
             _vendorRepository.Verify(repository => repository.UpdateAsync(vendor), Times.Once);
+            _vendorRequestValidator.Verify(validator => validator.ValidateGet(vendor.Id), Times.Once);
+            _vendorRepository.Verify(repository => repository.GetByIdAsync(vendor.Id), Times.Once);
             VerifyNoUnexpectedCalls();
         }
 

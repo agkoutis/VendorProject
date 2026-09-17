@@ -9,9 +9,9 @@ namespace Vendor.Interfaces
 
         Task<AppResponse<VendorResponse>> GetByIdAsync(string id);
 
-        Task<AppResponse<bool>> InsertAsync(VendorRequest vendor);
+        Task<AppResponse<VendorResponse>> InsertAsync(VendorRequest vendor);
 
-        Task<AppResponse<bool>> UpdateAsync(VendorResponse vendor);
+        Task<AppResponse<VendorResponse>> UpdateAsync(VendorResponse vendor);
 
         Task<AppResponse<bool>> DeleteAsync(string id);
     }

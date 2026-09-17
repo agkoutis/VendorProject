@@ -19,12 +19,12 @@ export class VendorService {
       .pipe(this.unwrap());
   }
 
-  create(vendor: VendorRequest): Observable<boolean> {
-    return this.http.post<AppResponse<boolean>>(this.vendorUrl, vendor).pipe(this.unwrap());
+  create(vendor: VendorRequest): Observable<Vendor> {
+    return this.http.post<AppResponse<Vendor>>(this.vendorUrl, vendor).pipe(this.unwrap());
   }
 
-  update(vendor: Vendor): Observable<boolean> {
-    return this.http.put<AppResponse<boolean>>(this.vendorUrl, vendor).pipe(this.unwrap());
+  update(vendor: Vendor): Observable<Vendor> {
+    return this.http.put<AppResponse<Vendor>>(this.vendorUrl, vendor).pipe(this.unwrap());
   }
 
   delete(id: string): Observable<boolean> {

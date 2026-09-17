@@ -34,10 +34,10 @@ export class VendorCreatePage {
     this.message = '';
 
     this.vendorService.create({ name, address }).subscribe({
-      next: () => {
+      next: (vendor) => {
         this.isSaving = false;
         this.form = { name: '', address: '' };
-        this.message = 'Vendor created.';
+        this.message = `Vendor created with id ${vendor.id}.`;
       },
       error: (error) => {
         this.isSaving = false;

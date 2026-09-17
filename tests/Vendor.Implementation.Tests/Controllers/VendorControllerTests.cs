@@ -57,16 +57,17 @@ namespace Vendor.Implementation.Tests.Controllers
         public async Task Insert_DelegatesToActionHandlerWithInsertAsync()
         {
             VendorRequest vendor = new() { Name = "Acme", Address = "Athens" };
-            IActionResult expected = new OkObjectResult(AppResponse<bool>.Success(true));
+            VendorResponse created = new() { Id = "vendor-1", Name = "Acme", Address = "Athens" };
+            IActionResult expected = new OkObjectResult(AppResponse<VendorResponse>.Success(created));
             _actionHandler
-                .Setup(handler => handler.ExecuteAppResponseAction(It.IsAny<Func<Task<AppResponse<bool>>>>()))
+                .Setup(handler => handler.ExecuteAppResponseAction(It.IsAny<Func<Task<AppResponse<VendorResponse>>>>()))
                 .ReturnsAsync(expected);
 
             IActionResult result = await _controller.Insert(vendor);
 
             Assert.Same(expected, result);
             _actionHandler.Verify(
-                handler => handler.ExecuteAppResponseAction(It.IsAny<Func<Task<AppResponse<bool>>>>()),
+                handler => handler.ExecuteAppResponseAction(It.IsAny<Func<Task<AppResponse<VendorResponse>>>>()),
                 Times.Once);
         }
 
@@ -74,16 +75,16 @@ namespace Vendor.Implementation.Tests.Controllers
         public async Task Update_DelegatesToActionHandlerWithUpdateAsync()
         {
             VendorResponse vendor = new() { Id = "vendor-1", Name = "Acme", Address = "Athens" };
-            IActionResult expected = new OkObjectResult(AppResponse<bool>.Success(true));
+            IActionResult expected = new OkObjectResult(AppResponse<VendorResponse>.Success(vendor));
             _actionHandler
-                .Setup(handler => handler.ExecuteAppResponseAction(It.IsAny<Func<Task<AppResponse<bool>>>>()))
+                .Setup(handler => handler.ExecuteAppResponseAction(It.IsAny<Func<Task<AppResponse<VendorResponse>>>>()))
                 .ReturnsAsync(expected);
 
             IActionResult result = await _controller.Update(vendor);
 
             Assert.Same(expected, result);
             _actionHandler.Verify(
-                handler => handler.ExecuteAppResponseAction(It.IsAny<Func<Task<AppResponse<bool>>>>()),
+                handler => handler.ExecuteAppResponseAction(It.IsAny<Func<Task<AppResponse<VendorResponse>>>>()),
                 Times.Once);
         }
 

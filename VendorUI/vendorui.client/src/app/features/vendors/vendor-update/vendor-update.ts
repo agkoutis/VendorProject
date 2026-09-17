@@ -72,7 +72,8 @@ export class VendorUpdatePage implements OnInit {
     this.message = '';
 
     this.vendorService.update({ id, name, address }).subscribe({
-      next: () => {
+      next: (vendor) => {
+        this.form = { ...vendor };
         this.isSaving = false;
         this.message = 'Vendor updated.';
       },

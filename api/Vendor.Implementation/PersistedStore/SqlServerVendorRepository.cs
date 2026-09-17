@@ -27,10 +27,12 @@ namespace Vendor.Implementation.PersistedStore
             return trader.ToResponse();
         }
 
-        public Task InsertAsync(VendorRequest vendor)
+        public async Task<string> InsertAsync(VendorRequest vendor)
         {
-            Trader trader = vendor.ToTrader(Guid.NewGuid().ToString());
-            return _dataLoader.InsertTrader(trader);
+            string id = Guid.NewGuid().ToString();
+            Trader trader = vendor.ToTrader(id);
+            await _dataLoader.InsertTrader(trader);
+            return id;
         }
 
         public Task UpdateAsync(VendorResponse vendor)

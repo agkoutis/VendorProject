@@ -9,7 +9,7 @@ namespace Vendor.Interfaces
 
         Task<VendorResponse> GetByIdAsync(string id);
 
-        Task InsertAsync(VendorRequest vendor);
+        Task<string> InsertAsync(VendorRequest vendor);
 
         Task UpdateAsync(VendorResponse vendor);
 
