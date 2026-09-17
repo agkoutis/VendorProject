@@ -3,7 +3,7 @@ using VendorUI.Server.Extensions;
 
 namespace VendorUI.Server.Middleware
 {
-    public class ReverseProxyMiddleware
+    public partial class ReverseProxyMiddleware
     {
         private readonly RequestDelegate _nextMiddleware;
         private readonly IHttpClientFactory _httpClientFactory;
@@ -57,7 +57,7 @@ namespace VendorUI.Server.Middleware
             try
             {
                 var httpClient = _httpClientFactory.CreateClient("reverse-proxy-client");
-                var targetRequestMessage = CreateTargetMessage(context, targetUri);
+                using var targetRequestMessage = CreateTargetMessage(context, targetUri);
                 using var responseMessage = await httpClient.SendAsync(
                     targetRequestMessage,
                     HttpCompletionOption.ResponseHeadersRead,
@@ -69,14 +69,11 @@ namespace VendorUI.Server.Middleware
             }
             catch (OperationCanceledException) when (context.RequestAborted.IsCancellationRequested)
             {
-                _logger.LogInformation("Reverse proxy request was cancelled by the client. Target: {TargetUri}", targetUri);
+                LogRequestCancelled(targetUri);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "{Middleware} - {Method}: Cannot proxy request to {TargetUri}",
-                    nameof(ReverseProxyMiddleware),
-                    nameof(ProxyThisRequest),
-                    targetUri);
+                LogProxyFailed(ex, targetUri);
 
                 if (!context.Response.HasStarted)
                 {
@@ -125,25 +122,50 @@ namespace VendorUI.Server.Middleware
         private static bool ShouldForwardHeader(KeyValuePair<string, StringValues> header)
         {
             return !string.Equals(header.Key, "cookie", StringComparison.OrdinalIgnoreCase)
-                && !string.Equals(header.Key, "content-length", StringComparison.OrdinalIgnoreCase)
                 && !string.Equals(header.Key, "host", StringComparison.OrdinalIgnoreCase)
-                && !string.Equals(header.Key, "connection", StringComparison.OrdinalIgnoreCase)
-                && !string.Equals(header.Key, "transfer-encoding", StringComparison.OrdinalIgnoreCase);
+                && !string.Equals(header.Key, "content-length", StringComparison.OrdinalIgnoreCase)
+                && !IsConnectionSpecificHeader(header.Key);
         }
 
         private static void CopyFromTargetResponseHeaders(HttpContext context, HttpResponseMessage responseMessage)
         {
             foreach (var header in responseMessage.Headers)
             {
+                if (IsConnectionSpecificHeader(header.Key)
+                    || string.Equals(header.Key, "content-length", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
                 context.Response.Headers[header.Key] = header.Value.ToArray();
             }
 
             foreach (var header in responseMessage.Content.Headers)
             {
+                if (IsConnectionSpecificHeader(header.Key)
+                    || string.Equals(header.Key, "content-length", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
                 context.Response.Headers[header.Key] = header.Value.ToArray();
             }
 
+            // Streamed CopyToAsync: Kestrel owns framing (typically chunked).
+            // Upstream Content-Length is for the proxy↔API connection, not the browser.
             context.Response.Headers.Remove("transfer-encoding");
+            context.Response.Headers.Remove("content-length");
+        }
+
+        private static bool IsConnectionSpecificHeader(string name)
+        {
+            return string.Equals(name, "connection", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(name, "keep-alive", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(name, "proxy-authenticate", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(name, "proxy-authorization", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(name, "proxy-connection", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(name, "transfer-encoding", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(name, "upgrade", StringComparison.OrdinalIgnoreCase);
         }
 
         private static HttpMethod GetMethod(string method)
@@ -158,5 +180,17 @@ namespace VendorUI.Server.Middleware
             if (HttpMethods.IsTrace(method)) return HttpMethod.Trace;
             return new HttpMethod(method);
         }
+
+        [LoggerMessage(
+            EventId = 1,
+            Level = LogLevel.Information,
+            Message = "Reverse proxy request was cancelled by the client. Target: {TargetUri}")]
+        private partial void LogRequestCancelled(Uri targetUri);
+
+        [LoggerMessage(
+            EventId = 2,
+            Level = LogLevel.Error,
+            Message = "ReverseProxyMiddleware - ProxyThisRequest: Cannot proxy request to {TargetUri}")]
+        private partial void LogProxyFailed(Exception exception, Uri targetUri);
     }
 }

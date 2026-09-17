@@ -3,7 +3,7 @@ using Vendor.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddJsonFile("VendorLoaderSettings.json", optional: false, reloadOnChange: true);
+builder.Configuration.AddJsonFile("vendorLoaderSettings.json", optional: false, reloadOnChange: true);
 
 builder.Services.AddControllers()
     .AddApplicationPart(typeof(VendorController).Assembly);
