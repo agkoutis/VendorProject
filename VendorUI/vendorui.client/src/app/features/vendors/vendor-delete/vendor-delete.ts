@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Vendor } from '../../../core/models/vendor';
@@ -15,6 +16,8 @@ import { PageFeedback } from '../../../shared/page-feedback/page-feedback';
 export class VendorDeletePage implements OnInit {
   private readonly vendorService = inject(VendorService);
   private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
+  private loadRequestId = 0;
 
   vendorId = '';
   vendor: Vendor | null = null;
@@ -24,7 +27,7 @@ export class VendorDeletePage implements OnInit {
   message = '';
 
   ngOnInit() {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const id = params.get('id');
       if (id) {
         this.vendorId = id;
@@ -42,6 +45,7 @@ export class VendorDeletePage implements OnInit {
       return;
     }
 
+    const requestId = ++this.loadRequestId;
     this.isLoading = true;
     this.error = '';
     this.message = '';
@@ -49,11 +53,19 @@ export class VendorDeletePage implements OnInit {
 
     this.vendorService.getById(id).subscribe({
       next: (vendor) => {
+        if (requestId !== this.loadRequestId) {
+          return;
+        }
+
         this.vendor = vendor;
         this.vendorId = vendor.id;
         this.isLoading = false;
       },
       error: (error) => {
+        if (requestId !== this.loadRequestId) {
+          return;
+        }
+
         this.isLoading = false;
         this.error = getErrorMessage(error, 'Failed to load vendor.');
       }
@@ -61,9 +73,9 @@ export class VendorDeletePage implements OnInit {
   }
 
   deleteVendor() {
-    const id = this.vendorId.trim();
+    const id = this.vendor?.id.trim();
     if (!id) {
-      this.error = 'Enter an id to delete.';
+      this.error = 'Load a vendor before deleting.';
       this.message = '';
       return;
     }

@@ -21,7 +21,7 @@
     </div>
     <div class="row">
       <button type="button" class="secondary" (click)="loadVendor()" [disabled]="isLoading">Load</button>
-      <button type="submit" [disabled]="isSaving || isLoading">Update</button>
+        <button type="submit" [disabled]="isSaving || isLoading || !canUpdate">Update</button>
       <a routerLink="/vendors">Back to list</a>
     </div>
   </form>
