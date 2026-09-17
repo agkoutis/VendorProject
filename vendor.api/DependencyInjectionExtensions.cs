@@ -22,32 +22,57 @@ namespace Vendor.Api
         private static void RegisterConfigurationSettings(IServiceCollection services, IConfiguration configuration)
         {
             VendorLoaderSettings settings = configuration.Get<VendorLoaderSettings>()
-                ?? throw new InvalidOperationException("Vendor loader settings are missing");
+                ?? throw CreateConfigurationException("Vendor loader settings are missing.");
 
             if (string.IsNullOrWhiteSpace(settings.SelectedLoaderType))
             {
-                throw new InvalidOperationException("SelectedLoaderType is missing");
+                throw CreateConfigurationException("SelectedLoaderType is missing.");
             }
 
             services.AddSingleton<IVendorService, VendorService>();
             services.AddSingleton<IVendorRequestValidator, VendorRequestValidator>();
 
+            VendorLoaderOptions loaderOptions = settings.VendorLoaderOptions
+                ?? throw CreateConfigurationException("VendorLoaderOptions are missing.");
+
             if (settings.SelectedLoaderType.Equals("Sql", StringComparison.OrdinalIgnoreCase))
             {
-                SqlLoaderOptions sql = settings.VendorLoaderOptions.Sql;
+                SqlLoaderOptions sql = loaderOptions.Sql
+                    ?? throw CreateConfigurationException("VendorLoaderOptions.Sql is missing.");
+                EnsureHasValue(sql.Server, "VendorLoaderOptions.Sql.Server");
+                EnsureHasValue(sql.UserId, "VendorLoaderOptions.Sql.UserId");
+                EnsureHasValue(sql.Password, "VendorLoaderOptions.Sql.Password");
+
                 services.AddSingleton(new DataLoader(sql.Server, sql.UserId, sql.Password));
                 services.AddSingleton<IVendorRepository, SqlServerVendorRepository>();
             }
             else if (settings.SelectedLoaderType.Equals("File", StringComparison.OrdinalIgnoreCase))
             {
-                FileLoaderOptions file = settings.VendorLoaderOptions.File;
+                FileLoaderOptions file = loaderOptions.File
+                    ?? throw CreateConfigurationException("VendorLoaderOptions.File is missing.");
+                EnsureHasValue(file.FilePath, "VendorLoaderOptions.File.FilePath");
+
                 services.AddSingleton(new Loader(file.FilePath));
                 services.AddSingleton<IVendorRepository, FileVendorRepository>();
             }
             else
             {
-                throw new InvalidOperationException($"Unknown SelectedLoaderType: {settings.SelectedLoaderType}");
+                throw CreateConfigurationException($"Unknown SelectedLoaderType: {settings.SelectedLoaderType}");
             }
+        }
+
+        private static void EnsureHasValue(string? value, string settingName)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw CreateConfigurationException($"{settingName} is missing.");
+            }
+        }
+
+        private static InvalidOperationException CreateConfigurationException(string message)
+        {
+            Console.Error.WriteLine($"Vendor.Api configuration error: {message}");
+            return new InvalidOperationException(message);
         }
     }
 }

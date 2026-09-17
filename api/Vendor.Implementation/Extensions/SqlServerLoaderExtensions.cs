@@ -10,9 +10,9 @@ namespace Vendor.Implementation.Extensions
         {
             return new VendorResponse
             {
-                Id = trader.Code,
-                Name = trader.Description,
-                Address = trader.Street
+                Id = trader.Code ?? string.Empty,
+                Name = trader.Description ?? string.Empty,
+                Address = trader.Street ?? string.Empty
             };
         }
 
